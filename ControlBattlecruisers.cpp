@@ -172,23 +172,16 @@ void BasicSc2Bot::Jump() {
         }
     }
 
-    // No retreating Battlecruisers, proceed with Tactical Jump logic
-    for (const auto &unit : Observation()->GetUnits(Unit::Alliance::Self)) {
-        // Check if the unit is a Battlecruiser with full health and not
-        // retreating
-        if (unit->unit_type == UNIT_TYPEID::TERRAN_BATTLECRUISER &&
-            unit->health >= unit->health_max &&
-            Distance2D(unit->pos, enemy_start_location) > 40.0f &&
-            HasAbility(unit, ABILITY_ID::EFFECT_TACTICALJUMP)) {
-            if (attack_target != enemy_start_location) {
-                Actions()->UnitCommand(unit, ABILITY_ID::EFFECT_TACTICALJUMP,
-                                       attack_target);
-            } else {
-                Actions()->UnitCommand(unit, ABILITY_ID::EFFECT_TACTICALJUMP,
-                                       enemy_start_location);
-            }
-        }
-    }
+	// No retreating Battlecruisers, proceed with Tactical Jump logic
+	for (const auto& unit : Observation()->GetUnits(Unit::Alliance::Self)) {
+		// Check if the unit is a Battlecruiser with full health and not retreating
+		if (unit->unit_type == UNIT_TYPEID::TERRAN_BATTLECRUISER &&
+			unit->health >= unit->health_max &&
+			Distance2D(unit->pos, enemy_start_location) > 40.0f &&
+			HasAbility(unit, ABILITY_ID::EFFECT_TACTICALJUMP)) {
+			Actions()->UnitCommand(unit, ABILITY_ID::EFFECT_TACTICALJUMP, enemy_start_location);
+		}
+	}
 }
 
 // Target mechanics for Battlecruisers
@@ -206,9 +199,12 @@ void BasicSc2Bot::TargetBattlecruisers() {
         return;
     }
 
-    // Number of Battlecruisers in combat
-    int num_battlecruisers_in_combat =
-        UnitsInCombat(UNIT_TYPEID::TERRAN_BATTLECRUISER);
+	if (current_gameloop % 23 != 0) {
+		return;
+	}
+
+	// Number of Battlecruisers in combat
+	int num_battlecruisers_in_combat = UnitsInCombat(UNIT_TYPEID::TERRAN_BATTLECRUISER);
 
     // Threshold for "kiting" behavior
     const int threat_threshold = 10 * num_battlecruisers_in_combat;
@@ -224,7 +220,13 @@ void BasicSc2Bot::TargetBattlecruisers() {
             }
         }
 
-        int total_threat = CalculateThreatLevel(battlecruiser);
+		// Retreat Immediately if the Battlecruiser is below 150 health
+		if ((battlecruiser->health <= 150.0f)) {
+			Retreat(battlecruiser);
+			return;
+		}
+
+		int total_threat = CalculateThreatLevel(battlecruiser);
 
         // Determine whether to retreat based on the threat level
         // retreat if the total threat level is above the threshold
@@ -248,34 +250,28 @@ void BasicSc2Bot::TargetBattlecruisers() {
                 health_threshold = 250.0f;
             }
 
-            if (battlecruiser->health <= health_threshold) {
-                Retreat(battlecruiser);
-            } else {
-                const Unit *target = GetClosestThreat(battlecruiser);
-                // Kite enemy units
-                if (target) {
-                    // Skip kiting if the target is too far away
-                    if (Distance2D(battlecruiser->pos, target->pos) > 12.0f) {
-                        continue;
-                    } else {
-                        Actions()->UnitCommand(
-                            battlecruiser, ABILITY_ID::MOVE_MOVE,
-                            GetKiteVector(battlecruiser, target));
-                    }
-                }
-            }
-        }
-        // Do not kite if the total threat level is below the threshold
-        else {
-            // Retreat Immediately if the Battlecruiser is below 150 health
-            if ((battlecruiser->health <= 150.0f)) {
-                Retreat(battlecruiser);
-                return;
-            }
-
-            const Unit *target = nullptr;
-            float min_distance = std::numeric_limits<float>::max();
-            float min_hp = std::numeric_limits<float>::max();
+			if (battlecruiser->health <= health_threshold) {
+				Retreat(battlecruiser);
+			}
+			else {
+				const Unit* target = GetClosestThreat(battlecruiser);
+				// Kite enemy units
+				if (target) {
+					// Skip kiting if the target is too far away
+					if (Distance2D(battlecruiser->pos, target->pos) > 12.0f) {
+						continue;
+					}
+					else {
+						Actions()->UnitCommand(battlecruiser, ABILITY_ID::MOVE_MOVE, GetKiteVector(battlecruiser, target));
+					}
+				}
+			}
+		}
+		// Do not kite if the total threat level is below the threshold
+		else {
+			const Unit* target = nullptr;
+			float min_distance = std::numeric_limits<float>::max();
+			float min_hp = std::numeric_limits<float>::max();
 
             auto UpdateTarget = [&](const Unit *enemy_unit,
                                     float max_distance) {
