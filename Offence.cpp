@@ -37,14 +37,7 @@ void BasicSc2Bot::Offense() {
 		// Check if we have enough army to attack
 		// At least one battlecruisers is currently in combat and not retreating
 		if (UnitsInCombat((UNIT_TYPEID::TERRAN_BATTLECRUISER)) > 0) {
-			bool not_retreating = false;
-			for (const auto& battlecruiser : battlecruisers) {
-				if (!battlecruiser_retreating[battlecruiser]) {
-					not_retreating = true;
-					break;
-				}
-			}
-			if (EnoughArmy() && not_retreating) {
+			if (EnoughArmy() && !AllRetreating()) {
 				if (need_clean_up) {
 					CleanUp();
 				}
@@ -63,13 +56,7 @@ void BasicSc2Bot::Offense() {
 					for (const auto& order : starport->orders) {
 						if (order.ability_id == ABILITY_ID::TRAIN_BATTLECRUISER) {
 							if (order.progress >= timing - 0.02f && order.progress <= timing + 0.02f) {
-								if (need_clean_up) {
-									CleanUp();
-								}
-								else {
-									// Continue attacking
-									AllOutRush();
-								}
+								AllOutRush();
 							}
 							return;
 						}
@@ -78,17 +65,8 @@ void BasicSc2Bot::Offense() {
 			}
 			// Battlecruisers are not in combat, and retreating
 			else {
-				bool attack = true;
-				for (const auto& unit : Observation()->GetUnits(Unit::Alliance::Self)) {
-					if (unit->unit_type == UNIT_TYPEID::TERRAN_BATTLECRUISER && battlecruiser_retreating[unit]) {
-						if (unit->health < 0.4f * unit->health_max) {
-							attack = false;
-							break;
-						}
-					}
-				}
 				// If all retreating Battlecruisers are healthy, execute the attack
-				if (attack) {
+				if (!AllRetreating()) {
 					if (need_clean_up) {
 						CleanUp();
 					}
@@ -102,9 +80,6 @@ void BasicSc2Bot::Offense() {
 	}
 	else {
 		ContinuousMove();
-		// Check if our army is mostly dead
-		Units marines = observation->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_MARINE));
-		Units siege_tanks = observation->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_SIEGETANK));
 		// If army is severely depleted, retreat and rebuild before attacking again
 		if (AllRetreating()) {
 			is_attacking = false;
@@ -228,10 +203,20 @@ void BasicSc2Bot::AllOutRush() {
 		}
 	}
 
-	for (const auto& tank : tank_near_rally) {
-		if (tank->orders.empty() && Distance2D(tank->pos, attack_target) > 5.0f) {
-			unit_attacking[tank] = true;
-			Actions()->UnitCommand(tank, ABILITY_ID::MOVE_MOVE, attack_target);
+	// Left 2 tank to defend the base
+	if (!tank_near_rally.empty() && tank_near_rally.size() >= 3) {
+		// Remove first 2 tanks
+		for (size_t i = 0; i < 2; ++i) {
+			tank_near_rally.erase(tank_near_rally.begin()); 
+		}
+
+		if (!tank_near_rally.empty()) {
+			for (const auto& tank : tank_near_rally) {
+				if (tank->orders.empty() && Distance2D(tank->pos, attack_target) > 5.0f) {
+					unit_attacking[tank] = true;
+					Actions()->UnitCommand(tank, ABILITY_ID::MOVE_MOVE, attack_target);
+				}
+			}
 		}
 	}
 

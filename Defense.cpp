@@ -41,24 +41,12 @@ void BasicSc2Bot::EarlyDefense() {
 	// Get and manage our combat units
 	Units marines = Observation()->GetUnits(Unit::Alliance::Self,
 		IsUnit(UNIT_TYPEID::TERRAN_MARINE));
-	Units siege_tanks = Observation()->GetUnits(
-		Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_SIEGETANK));
 
 	// Command marines
 	for (const auto& marine : marines) {
 		if (marine->orders.empty() ||
 			marine->orders.front().ability_id != ABILITY_ID::ATTACK) {
 			Actions()->UnitCommand(marine, ABILITY_ID::ATTACK,
-				primary_target ? primary_target->pos
-				: enemy_units.front()->pos);
-		}
-	}
-
-	// Command siege tanks
-	for (const auto& tank : siege_tanks) {
-		if (tank->orders.empty() ||
-			tank->orders.front().ability_id != ABILITY_ID::ATTACK) {
-			Actions()->UnitCommand(tank, ABILITY_ID::ATTACK,
 				primary_target ? primary_target->pos
 				: enemy_units.front()->pos);
 		}

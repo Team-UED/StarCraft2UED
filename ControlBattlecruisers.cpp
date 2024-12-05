@@ -172,12 +172,7 @@ void BasicSc2Bot::Jump() {
 			unit->health >= unit->health_max &&
 			Distance2D(unit->pos, enemy_start_location) > 40.0f &&
 			HasAbility(unit, ABILITY_ID::EFFECT_TACTICALJUMP)) {
-			if (attack_target != enemy_start_location) {
-				Actions()->UnitCommand(unit, ABILITY_ID::EFFECT_TACTICALJUMP, attack_target);
-			}
-			else {
-				Actions()->UnitCommand(unit, ABILITY_ID::EFFECT_TACTICALJUMP, enemy_start_location);
-			}
+			Actions()->UnitCommand(unit, ABILITY_ID::EFFECT_TACTICALJUMP, enemy_start_location);
 		}
 	}
 }
@@ -210,6 +205,12 @@ void BasicSc2Bot::TargetBattlecruisers() {
 			if (current_ability == ABILITY_ID::EFFECT_TACTICALJUMP) {
 				continue;
 			}
+		}
+
+		// Retreat Immediately if the Battlecruiser is below 150 health
+		if ((battlecruiser->health <= 150.0f)) {
+			Retreat(battlecruiser);
+			return;
 		}
 
 		int total_threat = CalculateThreatLevel(battlecruiser);
@@ -252,12 +253,6 @@ void BasicSc2Bot::TargetBattlecruisers() {
 		}
 		// Do not kite if the total threat level is below the threshold
 		else {
-			// Retreat Immediately if the Battlecruiser is below 150 health
-			if ((battlecruiser->health <= 150.0f)) {
-				Retreat(battlecruiser);
-				return;
-			}
-
 			const Unit* target = nullptr;
 			float min_distance = std::numeric_limits<float>::max();
 			float min_hp = std::numeric_limits<float>::max();
