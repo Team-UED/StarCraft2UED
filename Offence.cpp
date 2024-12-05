@@ -307,7 +307,7 @@ void BasicSc2Bot::CleanUp() {
 	}
 }
 
-// check if we have enough army to attack
+//Determine if we have enough army to attack
 bool BasicSc2Bot::EnoughArmy() {
 	const ObservationInterface* observation = Observation();
 
@@ -347,7 +347,7 @@ bool BasicSc2Bot::EnoughArmy() {
 	return false;
 }
 
-// make units move continuously to the target location
+// Issue move command continously to all attacking units
 void BasicSc2Bot::ContinuousMove() {
 	const ObservationInterface* observation = Observation();
 
@@ -379,6 +379,7 @@ void BasicSc2Bot::ContinuousMove() {
 	}
 }
 
+// Determine whether attacking units need to retreat
 bool BasicSc2Bot::AllRetreating() {
 	const ObservationInterface* observation = Observation();
 
