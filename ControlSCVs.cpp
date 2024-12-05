@@ -216,9 +216,9 @@ void BasicSc2Bot::RepairUnits() {
 void BasicSc2Bot::RepairStructures() {
     const Unit *target = FindDamagedStructure();
 
+    // Repair the target if it is at the base
     if (target) {
         for (const auto &scv_tag : scvs_repairing) {
-
             const Unit *scv = Observation()->GetUnit(scv_tag);
 
             // Skip if the SCV is invalid
@@ -253,6 +253,7 @@ void BasicSc2Bot::UpdateRepairingSCVs() {
         obs->GetUnits(Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_SCV));
     Units scvs_gas = GetAllSCVsGettingGas();
 
+    // Add SCVs to the repairing set
     for (const auto &scv : scvs) {
         if (scvs_repairing.size() < 6) {
             // Make sure it's not a gathering SCV
@@ -265,6 +266,7 @@ void BasicSc2Bot::UpdateRepairingSCVs() {
         }
     }
 
+    // Make repairing SCVs gather if there are no damaged units
     for (const auto &scv_tag : scvs_repairing) {
         const Unit *scv = obs->GetUnit(scv_tag);
         // Skip dead or invalid SCVs
