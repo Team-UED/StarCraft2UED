@@ -142,14 +142,14 @@ static void RunBot(int argc, char* argv[], sc2::Agent* Agent, sc2::Race race)
 	ConnectionOptions Options;
 	ParseArguments(argc, argv, Options);
 
-	class Human : public sc2::Agent {
+	/*class Human : public sc2::Agent {
 	public:
 		void OnGameStart() final {
 			Debug()->DebugTextOut("Human");
 			Debug()->SendDebug();
 		}
 	};
-	Human human_bot;
+	Human human_bot;*/
 	sc2::Coordinator coordinator;
 	int num_agents;
 	if (Options.ComputerOpponent) {
