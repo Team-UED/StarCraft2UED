@@ -68,6 +68,10 @@ void BasicSc2Bot::SiegeMode() {
 // Target mechanics for Siege Tanks
 void BasicSc2Bot::TargetSiegeTank() {
 
+	if (current_gameloop % 10 != 0)
+	{
+		return;
+	}
 	// Get all Siege Tanks
 	const Units siege_tanks_sieged = Observation()->GetUnits(
 		Unit::Alliance::Self, IsUnit(UNIT_TYPEID::TERRAN_SIEGETANKSIEGED));

@@ -552,8 +552,9 @@ void BasicSc2Bot::OnBuildingConstructionComplete(const Unit* unit) {
 				!barracks.empty() && barracks.front()->orders.empty()) {
 				const Unit* b = barracks.front();
 				const Unit* f = factories.front();
-				ramp_middle[0] = const_cast<sc2::Unit*>(f);
-				Swap(b, f, true);
+				// don't swap
+				/*ramp_middle[0] = const_cast<sc2::Unit*>(f);
+				Swap(b, f, true);*/
 			}
 			++phase;
 		}

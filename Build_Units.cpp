@@ -6,7 +6,10 @@ void BasicSc2Bot::ManageProduction() {
 	// Train units and upgrades
 	TrainMarines();
 	TrainBattlecruisers();
-	TrainSiegeTanks();
+	if (current_gameloop % 10 == 0)
+	{
+		TrainSiegeTanks();
+	}
 	UpgradeMarines();
 	UpgradeMechs();
 }
