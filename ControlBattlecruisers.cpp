@@ -191,6 +191,10 @@ void BasicSc2Bot::TargetBattlecruisers() {
 		return;
 	}
 
+	if (current_gameloop % 23 != 0) {
+		return;
+	}
+
 	// Number of Battlecruisers in combat
 	int num_battlecruisers_in_combat = UnitsInCombat(UNIT_TYPEID::TERRAN_BATTLECRUISER);
 

@@ -110,6 +110,11 @@ void BasicSc2Bot::Offense() {
 }
 
 void BasicSc2Bot::AllOutRush() {
+
+	if (current_gameloop % 23 != 0) {
+		return;
+	}
+
 	const ObservationInterface* obs = Observation();
 
 	// Get all our combat units
@@ -126,12 +131,12 @@ void BasicSc2Bot::AllOutRush() {
 	Units tank_near_rally;
 
 	for (const auto& marine : marines) {
-		if (Distance2D(marine->pos, rally_barrack) < 5.0f) {
+		if (Distance2D(marine->pos, rally_barrack) < 7.5f) {
 			marine_near_rally.emplace_back(marine);
 		}
 	}
 	for (const auto& tank : siege_tanks) {
-		if (Distance2D(tank->pos, rally_factory) < 5.0f) {
+		if (Distance2D(tank->pos, rally_factory) < 7.5f) {
 			tank_near_rally.emplace_back(tank);
 		}
 	}
@@ -205,17 +210,20 @@ void BasicSc2Bot::AllOutRush() {
 
 	// Left 2 tank to defend the base
 	if (!tank_near_rally.empty() && tank_near_rally.size() >= 3) {
-		// Remove first 2 tanks
-		for (size_t i = 0; i < 2; ++i) {
-			tank_near_rally.erase(tank_near_rally.begin()); 
+		// Separate tanks into defending and attacking groups
+		Units attacking_tanks;
+
+		// Exclude first 2 tanks for defense
+		for (size_t i = 2; i < tank_near_rally.size(); ++i) {
+			attacking_tanks.push_back(tank_near_rally[i]);
 		}
 
-		if (!tank_near_rally.empty()) {
-			for (const auto& tank : tank_near_rally) {
-				if (tank->orders.empty() && Distance2D(tank->pos, attack_target) > 5.0f) {
-					unit_attacking[tank] = true;
-					Actions()->UnitCommand(tank, ABILITY_ID::MOVE_MOVE, attack_target);
-				}
+
+		// Command the attacking tanks
+		for (const auto& tank : attacking_tanks) {
+			if (tank->orders.empty() && Distance2D(tank->pos, attack_target) > 5.0f) {
+				unit_attacking[tank] = true;
+				Actions()->UnitCommand(tank, ABILITY_ID::MOVE_MOVE, attack_target);
 			}
 		}
 	}
@@ -315,7 +323,9 @@ bool BasicSc2Bot::EnoughArmy() {
 		}
 	}
 
-	if (marine_count + tank_count >= 9) {
+	int tank_count_true = std::max(0, tank_count - 2);
+
+	if (marine_count + tank_count_true >= 9) {
 		return true;
 	}
 	return false;
