@@ -6,16 +6,17 @@ using namespace sc2;
 
 // Check if the ramp structure is intact
 bool BasicSc2Bot::IsRampIntact() {
-	// Check if the ramp is intact
 	bool ramp_intact = true;
+
 	for (const auto& building : ramp_depots) {
-		if (!building) {
+		if (!building || building->unit_type == UNIT_TYPEID::TERRAN_SUPPLYDEPOTLOWERED) {
 			ramp_intact = false;
 			break;
 		}
 	}
+
 	for (const auto& building : ramp_middle) {
-		if (!building) {
+		if (!building || building->is_flying) {
 			ramp_intact = false;
 			break;
 		}
