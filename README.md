@@ -1,8 +1,28 @@
-# BasicSc2Bot
-Template SC2 Bot for CMPUT 350 at UAlberta.
+# UEDBot
 
-This bot works with our fork of [Sc2LadderServer](https://github.com/solinas/Sc2LadderServer) which will be used to run the tournament at the end of the term. It should help you
-set up the build process with the correct version of SC2 API so you can focus on creating your bot.
+**UEDBot** is a high-performance Terran StarCraft 2 bot built in C++ that utilizes advanced strategies for both defense and offense. It features dynamic ramp blocking, optimized resource collection, and aggressive rush attacks to dominate opponents. UEDBot recently claimed **1st place** in a tournament of 11 bots, finishing undefeated with a record of **57 wins**, **3 draws**, and **0 losses**.
+
+## Features
+
+- **Dynamic Ramp Blocking**  
+  UEDBot blocks key ramps with Supply Depots and a Barracks for early-game defense, preventing enemy units from advancing.
+
+- **Optimized Resource Collection**  
+  UEDBot uses SCVs and Mules effectively for fast and efficient mineral and gas collection, ensuring a steady economic advantage.
+
+- **Unit Kiting**  
+  Inspired by professional play, UEDBot employs advanced kiting tactics with Marines and Battlecruisers to minimize damage while engaging enemies.
+
+- **Super Fast Rush Attack with Battlecruiser Teleport**  
+  UEDBot teleports a Battlecruiser to the enemy base before the 5-minute 30-second mark, followed by reinforcements of Marines and Siege Tanks for relentless pressure.
+
+- **Mixed Defense with Marines, Siege Tanks, and Missile Turrets**  
+  UEDBot uses Marines and Siege Tanks for defense while expanding its base with Missile Turrets to counter air threats in the later stages.
+
+## Tournament Achievement
+
+UEDBot is an undefeated champion, securing **1st place** in a tournament of **11 StarCraft 2 bots** with an impressive record of **57 wins**, **3 draws**, and **0 losses**.
+
 
 # Developer Install / Compile Instructions
 ## Requirements
