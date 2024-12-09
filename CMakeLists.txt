@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 
-project(UED-Bot)
+project(UEDBot)
 
 # Use bin as the directory for all executables.
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
@@ -62,7 +62,7 @@ include_directories(SYSTEM
 )
 
 # Create the executable.
-add_executable(UED-Bot ${SOURCES_BASICSC2BOT})
-target_link_libraries(UED-Bot
+add_executable(UEDBot ${SOURCES_BASICSC2BOT})
+target_link_libraries(UEDBot
     sc2api sc2lib sc2utils
 )
