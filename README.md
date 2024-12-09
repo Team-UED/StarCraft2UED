@@ -16,8 +16,8 @@ Download and install [Visual Studio 2022](https://www.visualstudio.com/downloads
 
 ```bat
 :: Clone the project
-$ git clone --recursive https://github.com/imrichardwu/StarCraft2UED.git
-$ cd BasicSc2Bot
+$ git clone --recursive https://github.com/Team-UED/UEDBot.git
+$ cd UEDBot
 
 :: Create build directory.
 $ mkdir build
@@ -27,7 +27,7 @@ $ cd build
 $ cmake ../ -G "Visual Studio 17 2022"
 
 :: Build the project using Visual Studio.
-$ start BasicSc2Bot.sln
+$ start UEDBot.sln
 ```
 
 ## Mac
@@ -40,8 +40,8 @@ Note: Try opening the SC2 game client before installing. If the game crashes bef
 To build, you must use the version of clang that comes with MacOS. 
 ```bat
 :: Clone the project
-$ git clone --recursive https://github.com/imrichardwu/StarCraft2UED.git
-$ cd BasicSc2Bot
+$ git clone --recursive https://github.com/Team-UED/UEDBot.git
+$ cd UEDBot
 
 :: Create build directory.
 $ mkdir build
@@ -88,10 +88,10 @@ You can find the build target under the `bin` directory. For example,
 
 ```
 # Windows
-./BasicSc2Bot.exe -c -a zerg -d Hard -m CactusValleyLE.SC2Map
+./UEDBot.exe -c -a zerg -d Hard -m CactusValleyLE.SC2Map
 
 # Mac
-./BasicSc2Bot -c -a zerg -d Hard -m CactusValleyLE.SC2Map
+./UEDBot -c -a zerg -d Hard -m CactusValleyLE.SC2Map
 ```
 
 will result in the bot playing against the zerg built-in AI on hard difficulty on the map CactusValleyLE.
